@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "demos/shinjuku-flow/index.html"
+      - "docs/github-pages.md"
       - "scripts/build-pages.py"
       - "scripts/verify-shinjuku.cjs"
       - "package.json"

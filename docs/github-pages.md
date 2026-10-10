@@ -4,14 +4,14 @@
 
 1. [リポジトリのSettings → Pages](https://github.com/kentaro-oishi-c3creators/codex-grafana-mcp-cloud/settings/pages) を開きます。
 2. **Build and deployment → Source** に **GitHub Actions** を選びます。設定が保存されたことを確認してください。既存のPagesサイトがある場合は、今回のデモを同じサイトのルートへ配信する構成になるため、公開内容を確認してください。
-3. [Actions → Publish Shinjuku Flow](https://github.com/kentaro-oishi-c3creators/codex-grafana-mcp-cloud/actions/workflows/pages.yml) で **Run workflow → main → Run workflow** を押します。
+3. 初回設定後、Codexに設定済みと伝えると、mainへの更新で公開処理を起動します。以後、デモ・公開設定・この公開手順の変更をmainへpushすると自動で検証・公開します。手動起動も必要な場合は [Actions → Publish Shinjuku Flow](https://github.com/kentaro-oishi-c3creators/codex-grafana-mcp-cloud/actions/workflows/pages.yml) の **Run workflow** を使えます。
 4. `build` と `deploy` の両ジョブが成功したことを確認します。環境保護で承認が必要な場合は GitHub の表示に従って承認してください。
 
 公開先は `https://kentaro-oishi-c3creators.github.io/codex-grafana-mcp-cloud/`。これはデプロイ成功後のURLです。Pages未有効の時点でリンクが表示されても、公開成功を意味しません。
 
 ## ワークフロー
 
-`.github/workflows/pages.yml` はmain上のデモ・公開スクリプト・関連依存設定の変更、または手動実行で動きます。
+`.github/workflows/pages.yml` はmain上のデモ・公開スクリプト・公開手順・関連依存設定の変更、または手動実行で動きます。
 
 - `build`: 固定依存のインストール、13項目のブラウザ検証、公開HTMLの準備、Pages用アーティファクトのアップロード、Pages設定の確認。
 - `deploy`: PagesのSourceがGitHub Actionsの場合だけ実行。公式 `configure-pages` / `deploy-pages` で配信し、その公開URLでHTTP 200、HTMLとコミットの一致、13項目の操作を確認。

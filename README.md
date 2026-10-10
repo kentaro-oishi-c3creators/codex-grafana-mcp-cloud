@@ -32,7 +32,7 @@ npm run verify:shinjuku
 
 ### GitHub Pagesで公開する
 
-[公開設定と確認手順](docs/github-pages.md) を用意しています。GitHubの **Settings → Pages → Source → GitHub Actions** を選び、**Actions → Publish Shinjuku Flow → Run workflow** を実行してください。以後はmain上のデモ変更に合わせて検証・公開します。Pages未有効の場合は公開をスキップするので、ワークフローの成功だけでは公開成功を意味しません。
+[公開設定と確認手順](docs/github-pages.md) を用意しています。GitHubの **Settings → Pages → Source → GitHub Actions** を一度選んでください。初回設定後はCodexからmainへの更新で公開処理を起動できます。以後はmain上のデモ変更に合わせて自動で検証・公開します。Pages未有効の場合は公開をスキップするので、ワークフローの成功だけでは公開成功を意味しません。
 
 公開先（有効化・デプロイ成功後）は `https://kentaro-oishi-c3creators.github.io/codex-grafana-mcp-cloud/` です。
 
