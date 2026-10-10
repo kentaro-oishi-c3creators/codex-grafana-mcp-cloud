@@ -22,7 +22,9 @@ Grafana のダッシュボードを JSON として Git で管理し、公式 Gra
 
 ## 新宿人流ラボ
 
-[SHINJUKU FLOW](demos/shinjuku-flow/README.md) は、人と車の移動アニメーション、時間再生、2D／3D切り替え、点の追跡、CSV保存を試せる独立デモです。HTMLをダウンロードしてブラウザで開けます。外部通信は不要で、データと地図は合成／模式モデルです。Grafana内のパネルとして公開したものではありません。
+**[公開デモ「SHINJUKU FLOW」を開く](https://kentaro-oishi-c3creators.github.io/codex-grafana-mcp-cloud/)**
+
+[操作説明](demos/shinjuku-flow/README.md)も用意しています。新宿人流ラボは、人と車の移動アニメーション、時間再生、2D／3D切り替え、点の追跡、CSV保存を試せる独立デモです。HTMLをダウンロードしてブラウザで開けます。外部通信は不要で、データと地図は合成／模式モデルです。Grafana内のパネルとして公開したものではありません。
 
 ```bash
 npm run verify:shinjuku
@@ -34,7 +36,7 @@ npm run verify:shinjuku
 
 [公開設定と確認手順](docs/github-pages.md) を用意しています。GitHubの **Settings → Pages → Source → GitHub Actions** を一度選んでください。初回設定後はCodexからmainへの更新で公開処理を起動できます。以後はmain上のデモ変更に合わせて自動で検証・公開します。Pages未有効の場合は公開をスキップするので、ワークフローの成功だけでは公開成功を意味しません。
 
-公開先（有効化・デプロイ成功後）は `https://kentaro-oishi-c3creators.github.io/codex-grafana-mcp-cloud/` です。
+公開先は [SHINJUKU FLOW](https://kentaro-oishi-c3creators.github.io/codex-grafana-mcp-cloud/) です。
 
 ## 最初の準備
 

@@ -6,6 +6,10 @@
 
 ## 開き方
 
+**[GitHub Pagesの公開デモを開く](https://kentaro-oishi-c3creators.github.io/codex-grafana-mcp-cloud/)**。ダウンロードせず、そのままブラウザで操作できます。
+
+オフラインで使いたい場合は、次の方法でHTMLを保存してください。
+
 **[index.html](index.html) をダウンロードし、Chrome、Edge、Firefox などのブラウザで開いてください。** GitHub 上では `index.html` を選び、右上の「Download raw file」から保存できます。保存した HTML をダブルクリックすると動作します。HTML 1ファイルだけで動き、インストール・API キー・サーバー・ネット接続は不要です。
 
 GitHub のファイル表示ページはソースコードを表示します。[GitHub Pages公開用のワークフロー](../../docs/github-pages.md) も用意しています。Pagesの有効化とデプロイが完了すると、HTMLのダウンロードなしで利用できます。公開状態はワークフローのdeployジョブで確認してください。また、このデモは Grafana 内に配置したパネルではなく、アニメーションと立体表示を優先した独立画面です。既存 Grafana ダッシュボードは変更していません。
