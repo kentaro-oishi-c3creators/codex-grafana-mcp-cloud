@@ -1,0 +1,1679 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SHINJUKU FLOW — 新宿人流ラボ</title>
+    <style>
+      :root {
+        --ink: #163239;
+        --muted: #698087;
+        --accent: #087f78;
+        --line: #dce5e3;
+        --paper: #f3f5f0;
+        --orange: #f69559;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: Inter, "Noto Sans JP", system-ui, sans-serif;
+        font-size: 14px;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+        border-radius: 9px;
+        padding: 9px 13px;
+      }
+      button:hover {
+        border-color: var(--accent);
+      }
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      canvas:focus-visible {
+        outline: 3px solid #e6a94d;
+        outline-offset: 3px;
+      }
+      button.active,
+      button.primary {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+      }
+      button:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 23px 32px;
+        border-bottom: 1px solid var(--line);
+        gap: 20px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+      }
+      .brand-icon {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        background: var(--ink);
+        color: #83e4c6;
+        border-radius: 13px;
+        font-size: 24px;
+      }
+      .eyebrow {
+        font-size: 10px;
+        letter-spacing: 2px;
+        font-weight: 750;
+        color: var(--accent);
+      }
+      h1 {
+        font-size: 21px;
+        margin: 4px 0 0;
+        letter-spacing: 0.6px;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 0;
+      }
+      p {
+        line-height: 1.7;
+      }
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        border-radius: 20px;
+        background: #e1ece5;
+        color: #286052;
+        padding: 7px 11px;
+        font-size: 11px;
+        font-weight: 650;
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        background: #169e82;
+        border-radius: 50%;
+      }
+      .workspace {
+        max-width: 1800px;
+        margin: auto;
+        padding: 24px 32px;
+      }
+      .intro {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        margin-bottom: 20px;
+        gap: 16px;
+      }
+      .intro h2 {
+        font-size: 27px;
+        font-weight: 650;
+        letter-spacing: -0.6px;
+      }
+      .intro p {
+        margin: 7px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .breadcrumb {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 13px;
+        margin-bottom: 19px;
+      }
+      .metric {
+        background: #fff;
+        border: 1px solid var(--line);
+        padding: 17px 20px;
+        border-radius: 12px;
+      }
+      .metric-label {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .metric-value {
+        font-size: 27px;
+        font-weight: 650;
+        font-variant-numeric: tabular-nums;
+        margin-top: 6px;
+      }
+      .metric-value small {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+        margin-left: 6px;
+      }
+      .metric-note {
+        font-size: 10px;
+        color: var(--accent);
+        margin-top: 5px;
+      }
+      .main {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 290px;
+        gap: 18px;
+      }
+      .map-card {
+        display: flex;
+        flex-direction: column;
+        background: #10242b;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px #19383913;
+        position: relative;
+        color: #daeae9;
+      }
+      .map-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 15px 19px;
+        border-bottom: 1px solid #ffffff15;
+        background: #142a31;
+      }
+      .map-title {
+        font-size: 12px;
+        font-weight: 650;
+      }
+      .map-subtitle {
+        font-size: 10px;
+        color: #8aa9ae;
+        margin-top: 4px;
+      }
+      .segmented {
+        display: flex;
+        gap: 3px;
+        padding: 3px;
+        background: #0b1d23;
+        border-radius: 9px;
+      }
+      .segmented button {
+        font-size: 11px;
+        border: 0;
+        background: transparent;
+        color: #93afb4;
+        padding: 7px 13px;
+      }
+      .segmented button.active {
+        background: #3d5c62;
+        color: #fff;
+      }
+      .map-stage {
+        position: relative;
+        height: 520px;
+        min-height: 520px;
+        flex: 1;
+      }
+      canvas {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+        cursor: grab;
+      }
+      canvas:active {
+        cursor: grabbing;
+      }
+      .map-top {
+        position: absolute;
+        left: 20px;
+        top: 17px;
+        display: flex;
+        gap: 8px;
+        pointer-events: none;
+      }
+      .map-pill {
+        background: #142b33dd;
+        border: 1px solid #64808955;
+        padding: 6px 9px;
+        border-radius: 7px;
+        font-size: 10px;
+        color: #c7dcd9;
+      }
+      .map-controls {
+        position: absolute;
+        right: 16px;
+        top: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .map-controls button {
+        background: #20383e;
+        color: #d1e5e2;
+        border-color: #415961;
+        width: 34px;
+        padding: 6px;
+      }
+      .map-legend {
+        position: absolute;
+        bottom: 16px;
+        left: 20px;
+        display: flex;
+        gap: 16px;
+        font-size: 10px;
+        color: #acc5c5;
+        pointer-events: none;
+      }
+      .map-legend i {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        margin-right: 5px;
+      }
+      .compass {
+        position: absolute;
+        right: 20px;
+        bottom: 18px;
+        font-size: 11px;
+        color: #88aaa9;
+        text-align: center;
+        pointer-events: none;
+      }
+      .tooltip {
+        position: absolute;
+        display: none;
+        pointer-events: none;
+        background: #f9fcf7;
+        color: #183c41;
+        border-radius: 9px;
+        padding: 10px 13px;
+        box-shadow: 0 3px 25px #0005;
+        font-size: 11px;
+        line-height: 1.7;
+        max-width: 220px;
+      }
+      .timeline {
+        background: #172f36;
+        padding: 16px 20px;
+        border-top: 1px solid #ffffff15;
+      }
+      .timeline-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 13px;
+      }
+      .timeline-left {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+      }
+      .timeline button {
+        background: #26474d;
+        color: #deefea;
+        border-color: #37575e;
+        font-size: 11px;
+      }
+      .timeline button.primary {
+        background: #8ee1c4;
+        color: #123b38;
+        border-color: #8ee1c4;
+        min-width: 62px;
+      }
+      .clock {
+        font-size: 22px;
+        letter-spacing: 1px;
+        font-variant-numeric: tabular-nums;
+      }
+      .clock small {
+        font-size: 10px;
+        color: #89adaa;
+        margin-left: 5px;
+      }
+      .speed {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: #9cbab9;
+        font-size: 10px;
+      }
+      .speed select {
+        color: #d5e9e5;
+        background: #25434a;
+        border: 1px solid #405c61;
+        border-radius: 6px;
+        padding: 5px;
+      }
+      .range {
+        width: 100%;
+        accent-color: #91e3c6;
+        cursor: pointer;
+      }
+      .time-labels {
+        display: flex;
+        justify-content: space-between;
+        color: #6f9497;
+        font-size: 9px;
+        margin-top: 6px;
+      }
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 13px;
+      }
+      .panel {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 12px;
+        padding: 18px;
+      }
+      .panel h2 {
+        margin-bottom: 14px;
+      }
+      .panel-sub {
+        font-size: 10px;
+        color: var(--muted);
+        margin: -5px 0 12px;
+      }
+      .toggle-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 9px 0;
+        font-size: 12px;
+        border-bottom: 1px solid #edf1ee;
+      }
+      .toggle-row:last-child {
+        border: 0;
+      }
+      .toggle-row input {
+        accent-color: var(--accent);
+        width: 17px;
+        height: 17px;
+        cursor: pointer;
+      }
+      .layer-name {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .swatch {
+        width: 8px;
+        height: 8px;
+        border-radius: 3px;
+      }
+      .density {
+        width: 100%;
+        accent-color: var(--accent);
+        margin: 13px 0 3px;
+      }
+      .density-caption {
+        display: flex;
+        justify-content: space-between;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .zone {
+        border-bottom: 1px solid #edf1ee;
+        padding: 11px 0;
+        cursor: pointer;
+        display: block;
+        width: 100%;
+        border-radius: 0;
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+        text-align: left;
+      }
+      .zone.active {
+        background: #edf7f1;
+        color: var(--ink);
+        border-color: #edf1ee;
+      }
+      .zone-top {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+      }
+      .zone-bar {
+        height: 4px;
+        background: #edf2ed;
+        margin-top: 8px;
+        border-radius: 3px;
+      }
+      .zone-bar i {
+        display: block;
+        height: 100%;
+        background: #439e8a;
+        border-radius: 3px;
+        transition: width 0.2s;
+      }
+      .inspection {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+      .inspection strong {
+        color: var(--ink);
+      }
+      .notice {
+        background: #eaf0e8;
+        border: 1px solid #d9e2d4;
+        border-radius: 11px;
+        padding: 14px 17px;
+        color: #5b7164;
+        font-size: 10px;
+        line-height: 1.85;
+        margin-top: 17px;
+      }
+      .notice strong {
+        color: #355a48;
+      }
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 10px;
+        margin-top: 16px;
+      }
+      .camera {
+        display: none;
+        margin-top: 10px;
+      }
+      .camera.visible {
+        display: block;
+      }
+      .camera label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .camera input {
+        width: 100%;
+        accent-color: var(--accent);
+      }
+      @media (min-width: 1600px) {
+        .map-stage {
+          height: 620px;
+          min-height: 620px;
+        }
+      }
+      @media (max-width: 950px) {
+        header,
+        .workspace {
+          padding: 18px;
+        }
+        .main {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+        .map-stage {
+          height: 470px;
+          min-height: 470px;
+        }
+        .header-right .breadcrumb {
+          display: none;
+        }
+      }
+      @media (max-width: 560px) {
+        .metrics {
+          grid-template-columns: 1fr 1fr;
+        }
+        .metric {
+          padding: 13px;
+        }
+        .metric-value {
+          font-size: 23px;
+        }
+        .sidebar {
+          display: flex;
+        }
+        .intro h2 {
+          font-size: 22px;
+        }
+        .intro .breadcrumb {
+          display: none;
+        }
+        .map-stage {
+          height: 400px;
+          min-height: 400px;
+        }
+        .map-toolbar {
+          padding: 13px 10px;
+        }
+        .timeline {
+          padding: 12px;
+        }
+        .timeline-left {
+          gap: 7px;
+        }
+        .clock {
+          font-size: 17px;
+        }
+        .timeline-top {
+          flex-wrap: wrap;
+        }
+        .map-top {
+          left: 10px;
+        }
+        .map-pill {
+          font-size: 9px;
+        }
+        .map-legend {
+          gap: 9px;
+          left: 10px;
+        }
+        .header-right {
+          gap: 0;
+        }
+        .badge {
+          font-size: 9px;
+        }
+        h1 {
+          font-size: 16px;
+        }
+        .footer {
+          gap: 10px;
+          line-height: 1.7;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">↗</div>
+        <div>
+          <div class="eyebrow">URBAN OBSERVATORY / DEMO 01</div>
+          <h1>SHINJUKU FLOW</h1>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="breadcrumb">TOKYO · 35.6909° N / 139.7003° E</span
+        ><span class="badge"><span class="dot"></span> SYNTHETIC DATA</span>
+      </div>
+    </header>
+    <div class="workspace">
+      <div class="intro">
+        <div>
+          <h2>街の動きを、時間で読み解く。</h2>
+          <p>
+            新宿駅周辺の人流・交通シミュレーション。地図をドラッグ、点を選択して移動を追跡。
+          </p>
+        </div>
+        <div class="breadcrumb">SHINJUKU / MOBILITY LAB</div>
+      </div>
+      <section class="metrics" aria-label="シミュレーション指標">
+        <div class="metric">
+          <div class="metric-label">アクティブな歩行者</div>
+          <div class="metric-value">
+            <span id="people-count">—</span><small>人</small>
+          </div>
+          <div class="metric-note">再生時刻に応じて変化 / 合成データ</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">走行中の車両</div>
+          <div class="metric-value">
+            <span id="car-count">—</span><small>台</small>
+          </div>
+          <div class="metric-note">道路ルート上を走行 / 合成データ</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">歩行者の平均速度</div>
+          <div class="metric-value">
+            <span id="mean-speed">—</span><small>m/s</small>
+          </div>
+          <div class="metric-note">シミュレーションの設定速度</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">西口エリアの滞在比率</div>
+          <div class="metric-value">
+            <span id="west-share">—</span><small>%</small>
+          </div>
+          <div class="metric-note">表示中の歩行者を集計</div>
+        </div>
+      </section>
+      <div class="main">
+        <section class="map-card" aria-label="インタラクティブ地図">
+          <div class="map-toolbar">
+            <div>
+              <div class="map-title">新宿駅周辺 · 移動の軌跡</div>
+              <div class="map-subtitle">概略座標 / 道路・建物は模式モデル</div>
+            </div>
+            <div class="segmented" aria-label="地図モード">
+              <button id="mode-2d" class="active" aria-pressed="true">
+                2D MAP</button
+              ><button id="mode-3d" aria-pressed="false">3D CITY</button>
+            </div>
+          </div>
+          <div class="map-stage" id="stage">
+            <canvas
+              id="map"
+              tabindex="0"
+              aria-label="新宿の模式地図。ドラッグで移動、矢印キーでも移動、プラス・マイナスで拡大縮小。点をクリックして追跡できます。"
+            ></canvas>
+            <div class="map-top">
+              <span class="map-pill" id="play-state"
+                >▶ シミュレーション再生</span
+              ><span class="map-pill" id="selection-label">全エリア</span>
+            </div>
+            <div class="map-controls">
+              <button id="zoom-in" aria-label="地図を拡大">＋</button
+              ><button id="zoom-out" aria-label="地図を縮小">−</button
+              ><button id="reset-view" aria-label="地図の視点をリセット">
+                ⌂
+              </button>
+            </div>
+            <div class="map-legend">
+              <span><i style="background: #8cebd0"></i>歩行者</span
+              ><span><i style="background: #ffb881"></i>車両</span
+              ><span><i style="background: #647e88"></i>模式道路</span>
+            </div>
+            <div class="compass"><span id="north">↑</span><br />N</div>
+            <div class="tooltip" id="tooltip"></div>
+          </div>
+          <div class="timeline">
+            <div class="timeline-top">
+              <div class="timeline-left">
+                <button class="primary" id="play" aria-label="再生を一時停止">
+                  Ⅱ 停止</button
+                ><span class="clock"
+                  ><span id="clock">08:00:00</span><small>JST</small></span
+                >
+              </div>
+              <div class="speed">
+                <label for="speed">再生速度</label
+                ><select id="speed">
+                  <option value="1">1×</option>
+                  <option value="10" selected>10×</option>
+                  <option value="60">60×</option>
+                  <option value="300">300×</option></select
+                ><button id="realtime" aria-pressed="false">現在時刻へ</button>
+              </div>
+            </div>
+            <input
+              id="time"
+              class="range"
+              type="range"
+              min="0"
+              max="86399"
+              value="28800"
+              step="1"
+              aria-label="再生する時刻"
+            />
+            <div class="time-labels">
+              <span>00:00</span><span>06:00</span><span>12:00</span
+              ><span>18:00</span><span>24:00</span>
+            </div>
+          </div>
+        </section>
+        <aside class="sidebar">
+          <section class="panel">
+            <h2>表示レイヤー</h2>
+            <div class="panel-sub">視点と見たい情報を切り替える</div>
+            <label class="toggle-row"
+              ><span class="layer-name"
+                ><i class="swatch" style="background: #5fbea6"></i>歩行者</span
+              ><input id="layer-people" type="checkbox" checked /></label
+            ><label class="toggle-row"
+              ><span class="layer-name"
+                ><i class="swatch" style="background: #f8ac70"></i>車両</span
+              ><input id="layer-cars" type="checkbox" checked /></label
+            ><label class="toggle-row"
+              ><span class="layer-name"
+                ><i class="swatch" style="background: #71979c"></i
+                >移動の軌跡</span
+              ><input id="layer-trails" type="checkbox" checked /></label
+            ><label class="toggle-row"
+              ><span class="layer-name"
+                ><i class="swatch" style="background: #426674"></i
+                >建物（模式）</span
+              ><input id="layer-buildings" type="checkbox" checked /></label
+            ><label class="toggle-row"
+              ><span class="layer-name"
+                ><i class="swatch" style="background: #769563"></i
+                >高低差（模式）</span
+              ><input id="layer-terrain" type="checkbox"
+            /></label>
+            <div class="camera" id="camera">
+              <label for="bearing"
+                >視点の回転<span id="bearing-label">−25°</span></label
+              ><input
+                id="bearing"
+                type="range"
+                min="-180"
+                max="180"
+                value="-25"
+              /><label for="pitch">俯角<span id="pitch-label">55°</span></label
+              ><input id="pitch" type="range" min="25" max="75" value="55" />
+            </div>
+          </section>
+          <section class="panel">
+            <h2>人流の密度</h2>
+            <div class="panel-sub">表示規模を変えて比較する</div>
+            <input
+              id="density"
+              class="density"
+              type="range"
+              min="100"
+              max="1200"
+              value="650"
+              step="50"
+              aria-label="歩行者の最大人数"
+            />
+            <div class="density-caption">
+              <span>100 人</span><strong id="density-label">最大 650 人</strong
+              ><span>1,200 人</span>
+            </div>
+          </section>
+          <section class="panel">
+            <h2>エリアを探索</h2>
+            <div class="panel-sub">選択でエリアを強調 / 再選択で解除</div>
+            <div id="zones"></div>
+          </section>
+          <section class="panel">
+            <h2>移動を追跡</h2>
+            <div class="inspection" id="inspection">
+              地図上の点を選択すると、<br />移動ルート・速度・座標を表示します。
+            </div>
+            <button
+              id="clear-selection"
+              style="margin-top: 12px; font-size: 11px"
+              disabled
+            >
+              追跡を解除</button
+            ><button id="export" style="margin-top: 12px; font-size: 11px">
+              現在の位置を CSV 保存
+            </button>
+          </section>
+        </aside>
+      </div>
+      <div class="notice">
+        <strong>この画面はデモです。</strong>
+        実際の個人位置・交通状況は取得していません。時刻同期モードも合成データです。新宿駅・周辺ランドマークは概略位置、道路・建物形状・建物高さ・地形の高低差は説明用の模式モデルです。実測の標高や山岳地形を表示するものではありません。
+      </div>
+      <div class="footer">
+        <span>LOCAL-FIRST · 通信なし / APIキー不要 / 合成データのみ</span
+        ><span
+          >地図操作：ドラッグで移動 · ホイールでズーム ·
+          3Dでは回転・俯角を調整</span
+        >
+      </div>
+    </div>
+    <script>
+      "use strict";
+      (() => {
+        const $ = (id) => document.getElementById(id),
+          canvas = $("map"),
+          ctx = canvas.getContext("2d");
+        const state = {
+          time: 28800,
+          playing: true,
+          speed: 10,
+          realtime: false,
+          mode: "2d",
+          zoom: 1,
+          panX: 0,
+          panY: 0,
+          bearing: -25,
+          pitch: 55,
+          density: 650,
+          zone: null,
+          selected: null,
+          layers: {
+            people: true,
+            cars: true,
+            trails: true,
+            buildings: true,
+            terrain: false,
+          },
+        };
+        const center = { lat: 35.6909, lon: 139.7003 };
+        // Approximate local metres around Shinjuku; schematic network, not routing/GIS evidence.
+        const nodes = [
+          [-700, 430],
+          [-440, 430],
+          [-170, 430],
+          [50, 430],
+          [370, 430],
+          [650, 430],
+          [-700, 150],
+          [-440, 150],
+          [-170, 150],
+          [50, 150],
+          [370, 150],
+          [650, 150],
+          [-700, -110],
+          [-440, -110],
+          [-170, -110],
+          [50, -110],
+          [370, -110],
+          [650, -110],
+          [-700, -400],
+          [-440, -400],
+          [-170, -400],
+          [50, -400],
+          [370, -400],
+          [650, -400],
+          [-700, -700],
+          [-440, -700],
+          [-170, -700],
+          [50, -700],
+          [370, -700],
+          [650, -700],
+        ];
+        const roads = [];
+        for (let r = 0; r < 5; r++)
+          for (let c = 0; c < 5; c++) roads.push([r * 6 + c, r * 6 + c + 1]);
+        for (let r = 0; r < 4; r++)
+          for (let c = 0; c < 6; c++)
+            if (c !== 2 && c !== 3) roads.push([r * 6 + c, (r + 1) * 6 + c]);
+        const footways = [
+          [2, 8],
+          [8, 14],
+          [14, 20],
+          [20, 26],
+          [3, 9],
+          [9, 15],
+          [15, 21],
+          [21, 27],
+          [14, 15],
+        ];
+        const neighbors = nodes.map(() => []);
+        for (const [a, b] of [...roads, ...footways]) {
+          neighbors[a].push(b);
+          neighbors[b].push(a);
+        }
+        const landmarks = [
+          { name: "新宿駅", x: -20, y: -50 },
+          { name: "東京都庁", x: -650, y: -50 },
+          { name: "新宿中央公園", x: -800, y: -80 },
+          { name: "歌舞伎町", x: 290, y: 470 },
+          { name: "新宿三丁目", x: 620, y: -80 },
+          { name: "新宿御苑方面", x: 720, y: -540 },
+          { name: "西新宿", x: -520, y: 590 },
+        ];
+        const zones = [
+          {
+            id: "west",
+            name: "西口・西新宿",
+            test: (p) => p.x < -170,
+            color: "#8cebd0",
+          },
+          {
+            id: "station",
+            name: "駅・南口",
+            test: (p) => p.x >= -170 && p.x < 100,
+            color: "#8ad3ef",
+          },
+          {
+            id: "east",
+            name: "東口・歌舞伎町",
+            test: (p) => p.x >= 100,
+            color: "#ffb881",
+          },
+        ];
+        function rng(seed) {
+          return () => {
+            seed = (Math.imul(1664525, seed) + 1013904223) >>> 0;
+            return seed / 4294967296;
+          };
+        }
+        const random = rng(20261010),
+          agents = [];
+        function routeFor(i, car) {
+          let n = car ? [0, 5, 24, 29, 1, 4][i % 6] : i % nodes.length;
+          const path = [nodes[n]];
+          for (let k = 0; k < 9; k++) {
+            const opts = neighbors[n].filter(
+              (v) =>
+                (!car ||
+                  roads.some(
+                    ([a, b]) => (a === n && b === v) || (b === n && a === v),
+                  )) &&
+                (path.length < 2 || nodes[v] !== path[path.length - 2]),
+            );
+            const options = opts.length
+              ? opts
+              : neighbors[n].filter(
+                  (v) =>
+                    !car ||
+                    roads.some(
+                      ([a, b]) => (a === n && b === v) || (b === n && a === v),
+                    ),
+                );
+            n = options[Math.floor(random() * options.length)];
+            path.push(nodes[n]);
+          }
+          const back = path.slice(1, -1).reverse();
+          return [...path, ...back, path[0]];
+        }
+        for (let i = 0; i < 1340; i++) {
+          const car = i >= 1200,
+            path = routeFor(i, car),
+            segments = [];
+          let total = 0;
+          for (let k = 1; k < path.length; k++) {
+            const a = path[k - 1],
+              b = path[k],
+              length = Math.hypot(b[0] - a[0], b[1] - a[1]);
+            segments.push({ a, b, start: total, length });
+            total += length;
+          }
+          agents.push({
+            id:
+              (car ? "CAR-" : "P-") +
+              String(car ? i - 1199 : i + 1).padStart(4, "0"),
+            car,
+            speed: car ? 5 + random() * 5 : 0.75 + random() * 0.95,
+            phase: random() * total,
+            path,
+            segments,
+            total,
+            rank: car ? i - 1200 : i,
+            routeId: `${car ? "road" : "walk"}-${(i % 24) + 1}`,
+          });
+        }
+        function position(a, time) {
+          let d = (((time * a.speed + a.phase) % a.total) + a.total) % a.total;
+          const s =
+              a.segments.find((s) => d <= s.start + s.length) ||
+              a.segments[a.segments.length - 1],
+            t = (d - s.start) / s.length;
+          return {
+            x: s.a[0] + (s.b[0] - s.a[0]) * t + (a.car ? 4 : 0),
+            y: s.a[1] + (s.b[1] - s.a[1]) * t + (a.car ? 4 : 0),
+            heading: Math.atan2(s.b[1] - s.a[1], s.b[0] - s.a[0]),
+          };
+        }
+        function demand(t) {
+          const h = t / 3600;
+          return (
+            0.22 +
+            0.55 * Math.exp(-(((h - 8.5) / 2) ** 2)) +
+            0.73 * Math.exp(-(((h - 18.5) / 3) ** 2)) +
+            0.23 * Math.exp(-(((h - 13) / 3) ** 2))
+          );
+        }
+        function active() {
+          const count = Math.min(
+              state.density,
+              Math.round(state.density * demand(state.time)),
+            ),
+            cars = Math.round(140 * (0.35 + 0.55 * demand(state.time)));
+          return agents.filter((a) => a.rank < (a.car ? cars : count));
+        }
+        let W = 1000,
+          H = 520,
+          dpr = 1,
+          visible = [],
+          lastFrame = performance.now(),
+          frameCount = 0,
+          lastMetrics = -1;
+        function altitude(x, y) {
+          return state.layers.terrain
+            ? 9 * Math.sin(x / 330) + 7 * Math.cos(y / 260)
+            : 0;
+        }
+        function project(x, y, z = 0) {
+          const scale = Math.min(W / 1900, H / 1600) * state.zoom;
+          let xx = x,
+            yy = y + 70;
+          if (state.mode === "3d") {
+            const b = (state.bearing * Math.PI) / 180,
+              angle = (state.pitch * Math.PI) / 180;
+            const tx = xx * Math.cos(b) - yy * Math.sin(b);
+            yy = xx * Math.sin(b) + yy * Math.cos(b);
+            xx = tx;
+            return {
+              x: W * 0.5 + xx * scale + state.panX,
+              y:
+                H * 0.53 -
+                yy * scale * Math.cos(angle) -
+                (z + altitude(x, y)) * scale * Math.sin(angle) +
+                state.panY,
+            };
+          }
+          return {
+            x: W * 0.5 + xx * scale + state.panX,
+            y: H * 0.5 - yy * scale + state.panY,
+          };
+        }
+        function line(points, color, width) {
+          ctx.beginPath();
+          points.forEach((p, i) => {
+            const q = project(p[0], p[1], p[2] || 0);
+            i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y);
+          });
+          ctx.strokeStyle = color;
+          ctx.lineWidth = width;
+          ctx.stroke();
+        }
+        function poly(points, fill, stroke) {
+          ctx.beginPath();
+          points.forEach((p, i) => {
+            const q = project(p[0], p[1], p[2] || 0);
+            i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y);
+          });
+          ctx.closePath();
+          ctx.fillStyle = fill;
+          ctx.fill();
+          if (stroke) {
+            ctx.strokeStyle = stroke;
+            ctx.lineWidth = 0.65;
+            ctx.stroke();
+          }
+        }
+        const buildings = [];
+        const br = rng(77);
+        for (let row = 0; row < 4; row++)
+          for (let col = 0; col < 5; col++) {
+            const x0 = nodes[row * 6 + col][0],
+              x1 = nodes[row * 6 + col + 1][0],
+              y0 = nodes[row * 6 + col][1],
+              y1 = nodes[(row + 1) * 6 + col][1];
+            if (col === 2) continue;
+            for (let bx = 0; bx < 2; bx++)
+              for (let by = 0; by < 2; by++) {
+                const x = x0 + 32 + (bx * (x1 - x0 - 52)) / 2,
+                  y = y1 + 32 + (by * (y0 - y1 - 52)) / 2;
+                buildings.push({
+                  x,
+                  y,
+                  w: (x1 - x0 - 80) / 2,
+                  h: (y0 - y1 - 80) / 2,
+                  z: col < 2 ? 35 + br() * 135 : 18 + br() * 60,
+                });
+              }
+          }
+        function ground() {
+          poly(
+            [
+              [-1000, -850],
+              [900, -850],
+              [900, 800],
+              [-1000, 800],
+            ],
+            "#122b31",
+            "#29454a",
+          );
+          for (let x = -1000; x <= 900; x += 100)
+            line(
+              [
+                [x, -850],
+                [x, 800],
+              ],
+              "#1c363c",
+              0.5,
+            );
+          for (let y = -800; y <= 800; y += 100)
+            line(
+              [
+                [-1000, y],
+                [900, y],
+              ],
+              "#1c363c",
+              0.5,
+            );
+          poly(
+            [
+              [-930, -320],
+              [-730, -320],
+              [-730, 160],
+              [-930, 160],
+            ],
+            "#203e34",
+            "#355543",
+          );
+          poly(
+            [
+              [580, -800],
+              [850, -800],
+              [850, -430],
+              [580, -430],
+            ],
+            "#203e34",
+            "#355543",
+          );
+          if (state.layers.terrain) {
+            for (let i = 0; i < 8; i++) {
+              const points = [];
+              for (let x = -950; x < 900; x += 25)
+                points.push([x, -730 + i * 190 + 30 * Math.sin(x / 200), 0]);
+              line(points, "#84976555", 1);
+            }
+            ctx.fillStyle = "#b1c891";
+            ctx.font = "10px system-ui";
+            ctx.fillText(
+              "高低差：説明用モデル（実測ではありません）",
+              20,
+              H - 44,
+            );
+          }
+          for (const [a, b] of roads) {
+            line([nodes[a], nodes[b]], "#0d1e25", 12 * state.zoom);
+            line([nodes[a], nodes[b]], "#3b565e", 7 * state.zoom);
+            ctx.setLineDash([4, 7]);
+            line([nodes[a], nodes[b]], "#71818866", 0.6 * state.zoom);
+            ctx.setLineDash([]);
+          }
+          for (const [a, b] of footways)
+            line([nodes[a], nodes[b]], "#40636a", 3 * state.zoom);
+          for (let i = 0; i < 4; i++)
+            line(
+              [
+                [-115 + i * 23, -700],
+                [-115 + i * 23, 730],
+              ],
+              "#67808766",
+              1 * state.zoom,
+            );
+          poly(
+            [
+              [-140, -260],
+              [35, -260],
+              [35, 220],
+              [-140, 220],
+            ],
+            "#274b55",
+            "#5c8b96",
+          );
+          if (state.zone) {
+            const corners =
+              state.zone === "west"
+                ? [
+                    [-710, -710],
+                    [-180, -710],
+                    [-180, 690],
+                    [-710, 690],
+                  ]
+                : state.zone === "east"
+                  ? [
+                      [110, -710],
+                      [800, -710],
+                      [800, 690],
+                      [110, 690],
+                    ]
+                  : [
+                      [-170, -710],
+                      [100, -710],
+                      [100, 690],
+                      [-170, 690],
+                    ];
+            poly(corners, "#77e5bf0b", "#83d5bf66");
+          }
+          if (state.layers.buildings) {
+            const sorted = buildings
+              .slice()
+              .sort((a, b) => project(a.x, a.y).y - project(b.x, b.y).y);
+            for (const b of sorted) {
+              const { x, y, w, h } = b;
+              const z = state.mode === "3d" ? b.z : 0;
+              poly(
+                [
+                  [x, y, 0],
+                  [x + w, y, 0],
+                  [x + w, y, z],
+                  [x, y, z],
+                ],
+                "#203d47",
+                "#405865",
+              );
+              poly(
+                [
+                  [x + w, y, 0],
+                  [x + w, y + h, 0],
+                  [x + w, y + h, z],
+                  [x + w, y, z],
+                ],
+                "#1a343e",
+                "#405865",
+              );
+              poly(
+                [
+                  [x, y, z],
+                  [x + w, y, z],
+                  [x + w, y + h, z],
+                  [x, y + h, z],
+                ],
+                state.mode === "3d" ? "#365761" : "#203d46",
+                "#52707866",
+              );
+            }
+          }
+        }
+        function zoneOf(p) {
+          return zones.find((z) => z.test(p));
+        }
+        function drawAgents(list) {
+          visible = [];
+          for (const a of list) {
+            if (!state.layers[a.car ? "cars" : "people"]) continue;
+            const p = position(a, state.time),
+              color = a.car ? "#ffb881" : "#8cebd0",
+              muted = state.zone && zoneOf(p).id !== state.zone;
+            ctx.globalAlpha = muted ? 0.13 : 1;
+            if (state.layers.trails) {
+              const pts = [];
+              for (let i = 8; i >= 0; i--) {
+                const q = position(a, state.time - i * (a.car ? 1.2 : 3));
+                pts.push([q.x, q.y, 2]);
+              }
+              line(pts, a.car ? "#ffa9714a" : "#7bdfbc33", a.car ? 1.5 : 1);
+            }
+            const q = project(p.x, p.y, 3);
+            visible.push({ a, p, q });
+            ctx.fillStyle = color;
+            if (a.car) {
+              const head = project(
+                p.x + Math.cos(p.heading) * 10,
+                p.y + Math.sin(p.heading) * 10,
+                3,
+              );
+              ctx.save();
+              ctx.translate(q.x, q.y);
+              ctx.rotate(Math.atan2(head.y - q.y, head.x - q.x));
+              ctx.fillRect(-3.5, -1.5, 7, 3);
+              ctx.restore();
+            } else {
+              ctx.beginPath();
+              ctx.arc(
+                q.x,
+                q.y,
+                1.6 * Math.min(state.zoom, 1.8),
+                0,
+                Math.PI * 2,
+              );
+              ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+          }
+          const chosen = visible.find((v) => v.a.id === state.selected);
+          if (chosen) {
+            line(
+              chosen.a.path.map((p) => [...p, 4]),
+              "#fff2a68a",
+              2,
+            );
+            ctx.strokeStyle = "#ffe8a1";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(chosen.q.x, chosen.q.y, 8, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = "#fff2bc";
+            ctx.font = "11px system-ui";
+            ctx.fillText(chosen.a.id, chosen.q.x + 12, chosen.q.y - 7);
+          }
+        }
+        function labels() {
+          ctx.textAlign = "center";
+          for (const l of landmarks) {
+            const q = project(l.x, l.y, 5);
+            ctx.font =
+              l.name === "新宿駅" ? "bold 14px system-ui" : "11px system-ui";
+            const width = ctx.measureText(l.name).width;
+            ctx.fillStyle = "#10262cd9";
+            ctx.fillRect(q.x - width / 2 - 5, q.y - 13, width + 10, 19);
+            ctx.fillStyle = l.name === "新宿駅" ? "#e0f9f0" : "#9bbdbd";
+            ctx.fillText(l.name, q.x, q.y);
+          }
+          ctx.textAlign = "left";
+        }
+        function format(t) {
+          const s = Math.floor(t) % 86400;
+          return `${String(Math.floor(s / 3600)).padStart(2, "0")}:${String(Math.floor(s / 60) % 60).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+        }
+        function geo(p) {
+          return {
+            latitude: center.lat + p.y / 111320,
+            longitude:
+              center.lon +
+              p.x / (111320 * Math.cos((center.lat * Math.PI) / 180)),
+          };
+        }
+        function updateMetrics(list) {
+          const ps = list.filter((a) => !a.car),
+            cs = list.filter((a) => a.car),
+            counts = { west: 0, station: 0, east: 0 };
+          for (const a of ps) counts[zoneOf(position(a, state.time)).id]++;
+          $("people-count").textContent = ps.length.toLocaleString();
+          $("car-count").textContent = cs.length;
+          $("mean-speed").textContent = (
+            ps.reduce((s, a) => s + a.speed, 0) / Math.max(1, ps.length)
+          ).toFixed(2);
+          $("west-share").textContent = Math.round(
+            (counts.west / Math.max(1, ps.length)) * 100,
+          );
+          for (const z of zones) {
+            $(`count-${z.id}`).textContent = counts[z.id] + " 人";
+            $(`bar-${z.id}`).style.width =
+              (counts[z.id] / Math.max(1, ps.length)) * 100 + "%";
+          }
+          const a = list.find((a) => a.id === state.selected);
+          if (a) {
+            const p = position(a, state.time),
+              g = geo(p);
+            $("inspection").innerHTML =
+              `<strong>${a.id}</strong> · ${a.car ? "車両" : "歩行者"}<br>ルート ${a.routeId}<br>速度 ${a.speed.toFixed(2)} m/s<br>緯度 ${g.latitude.toFixed(5)}<br>経度 ${g.longitude.toFixed(5)}<br>エリア ${zoneOf(p).name}`;
+          } else if (state.selected) {
+            $("inspection").textContent =
+              "選択対象は現在の人数・レイヤー設定では表示されていません。追跡を解除して別の点を選択できます。";
+          } else {
+            $("inspection").innerHTML =
+              "地図上の点を選択すると、<br>移動ルート・速度・座標を表示します。";
+          }
+          $("clear-selection").disabled = !state.selected;
+          return counts;
+        }
+        function jstSeconds() {
+          const now = new Date();
+          return (
+            ((now.getUTCHours() + 9) % 24) * 3600 +
+            now.getUTCMinutes() * 60 +
+            now.getUTCSeconds() +
+            now.getUTCMilliseconds() / 1000
+          );
+        }
+        function tick(now) {
+          const dt = Math.min((now - lastFrame) / 1000, 0.15);
+          lastFrame = now;
+          if (state.playing) {
+            state.time = state.realtime
+              ? jstSeconds()
+              : (state.time + dt * state.speed) % 86400;
+          }
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          ctx.clearRect(0, 0, W, H);
+          ground();
+          const list = active();
+          drawAgents(list);
+          labels();
+          $("clock").textContent = format(state.time);
+          $("time").value = Math.floor(state.time);
+          if (now - lastMetrics > 200) {
+            updateMetrics(list);
+            lastMetrics = now;
+          }
+          frameCount++;
+          requestAnimationFrame(tick);
+        }
+        function resize() {
+          const r = canvas.getBoundingClientRect();
+          W = r.width;
+          H = r.height;
+          dpr = Math.min(devicePixelRatio || 1, 2);
+          canvas.width = Math.round(W * dpr);
+          canvas.height = Math.round(H * dpr);
+        }
+        new ResizeObserver(resize).observe($("stage"));
+        function playback() {
+          $("play").textContent = state.playing ? "Ⅱ 停止" : "▶ 再生";
+          $("play").setAttribute(
+            "aria-label",
+            state.playing ? "再生を一時停止" : "再生を開始",
+          );
+          $("play-state").textContent = state.playing
+            ? state.realtime
+              ? "● 時刻同期（合成）"
+              : "▶ シミュレーション再生"
+            : "Ⅱ 一時停止";
+          $("realtime").classList.toggle("active", state.realtime);
+          $("realtime").setAttribute("aria-pressed", String(state.realtime));
+          $("speed").disabled = state.realtime;
+        }
+        $("play").onclick = () => {
+          state.playing = !state.playing;
+          playback();
+        };
+        $("time").oninput = (e) => {
+          state.time = +e.target.value;
+          state.realtime = false;
+          state.playing = false;
+          playback();
+          lastMetrics = -1;
+        };
+        $("speed").onchange = (e) => (state.speed = +e.target.value);
+        $("realtime").onclick = () => {
+          state.realtime = true;
+          state.time = jstSeconds();
+          state.playing = true;
+          playback();
+        };
+        for (const mode of ["2d", "3d"])
+          $(`mode-${mode}`).onclick = () => {
+            state.mode = mode;
+            for (const m of ["2d", "3d"]) {
+              $(`mode-${m}`).classList.toggle("active", m === mode);
+              $(`mode-${m}`).setAttribute("aria-pressed", String(m === mode));
+            }
+            $("camera").classList.toggle("visible", mode === "3d");
+            $("north").style.display =
+              mode === "3d" ? "inline-block" : "inline";
+            $("north").style.transform =
+              mode === "3d" ? `rotate(${-state.bearing}deg)` : "";
+          };
+        for (const l of Object.keys(state.layers))
+          $(`layer-${l}`).onchange = (e) => {
+            state.layers[l] = e.target.checked;
+            lastMetrics = -1;
+          };
+        $("density").oninput = (e) => {
+          state.density = +e.target.value;
+          $("density-label").textContent =
+            `最大 ${state.density.toLocaleString()} 人`;
+          lastMetrics = -1;
+        };
+        for (const prop of ["bearing", "pitch"])
+          $(prop).oninput = (e) => {
+            state[prop] = +e.target.value;
+            $(`${prop}-label`).textContent = state[prop] + "°";
+            $("north").style.transform = `rotate(${-state.bearing}deg)`;
+          };
+        function zoom(v) {
+          state.zoom = Math.max(0.6, Math.min(3, state.zoom * v));
+        }
+        $("zoom-in").onclick = () => zoom(1.2);
+        $("zoom-out").onclick = () => zoom(1 / 1.2);
+        $("reset-view").onclick = () => {
+          state.zoom = 1;
+          state.panX = state.panY = 0;
+          state.bearing = -25;
+          state.pitch = 55;
+          $("bearing").value = -25;
+          $("pitch").value = 55;
+          $("bearing-label").textContent = "−25°";
+          $("pitch-label").textContent = "55°";
+          $("north").style.transform =
+            state.mode === "3d" ? "rotate(25deg)" : "";
+        };
+        canvas.addEventListener(
+          "wheel",
+          (e) => {
+            e.preventDefault();
+            zoom(e.deltaY < 0 ? 1.1 : 1 / 1.1);
+          },
+          { passive: false },
+        );
+        canvas.onkeydown = (e) => {
+          const moves = {
+            ArrowLeft: [25, 0],
+            ArrowRight: [-25, 0],
+            ArrowUp: [0, 25],
+            ArrowDown: [0, -25],
+          };
+          if (moves[e.key]) {
+            e.preventDefault();
+            state.panX += moves[e.key][0];
+            state.panY += moves[e.key][1];
+          } else if (e.key === "+" || e.key === "=") zoom(1.2);
+          else if (e.key === "-") zoom(1 / 1.2);
+          else if (e.key === "Escape") clearSelection();
+        };
+        let drag = null;
+        function local(e) {
+          const r = canvas.getBoundingClientRect();
+          return { x: e.clientX - r.left, y: e.clientY - r.top };
+        }
+        function nearest(p) {
+          return visible.reduce(
+            (best, v) => {
+              const d = Math.hypot(v.q.x - p.x, v.q.y - p.y);
+              return d < best.d ? { v, d } : best;
+            },
+            { v: null, d: 12 },
+          ).v;
+        }
+        canvas.onpointerdown = (e) => {
+          const p = local(e);
+          drag = { x: p.x, y: p.y, moved: false };
+          canvas.setPointerCapture(e.pointerId);
+        };
+        canvas.onpointermove = (e) => {
+          const p = local(e);
+          if (drag) {
+            const dx = p.x - drag.x,
+              dy = p.y - drag.y;
+            state.panX += dx;
+            state.panY += dy;
+            drag.moved = drag.moved || Math.hypot(dx, dy) > 2;
+            drag.x = p.x;
+            drag.y = p.y;
+            $("tooltip").style.display = "none";
+          } else {
+            const hit = nearest(p);
+            $("tooltip").style.display = hit ? "block" : "none";
+            if (hit) {
+              $("tooltip").style.left = Math.min(p.x + 14, W - 190) + "px";
+              $("tooltip").style.top = Math.max(50, p.y - 55) + "px";
+              $("tooltip").textContent =
+                `${hit.a.id} · ${hit.a.car ? "車両" : "歩行者"} · ${hit.a.speed.toFixed(2)} m/s`;
+            }
+          }
+        };
+        canvas.onpointerup = (e) => {
+          if (drag && !drag.moved) {
+            const hit = nearest(local(e));
+            if (hit) {
+              state.selected = hit.a.id;
+              lastMetrics = -1;
+            }
+          }
+          drag = null;
+        };
+        canvas.onpointercancel = () => (drag = null);
+        canvas.onpointerleave = () => ($("tooltip").style.display = "none");
+        function clearSelection() {
+          state.selected = null;
+          lastMetrics = -1;
+        }
+        $("clear-selection").onclick = clearSelection;
+        for (const z of zones) {
+          const b = document.createElement("button");
+          b.className = "zone";
+          b.id = `zone-${z.id}`;
+          b.setAttribute("aria-pressed", "false");
+          b.innerHTML = `<div class="zone-top"><span>${z.name}</span><strong id="count-${z.id}">—</strong></div><div class="zone-bar"><i id="bar-${z.id}"></i></div>`;
+          b.onclick = () => {
+            state.zone = state.zone === z.id ? null : z.id;
+            for (const zz of zones) {
+              $(`zone-${zz.id}`).classList.toggle(
+                "active",
+                state.zone === zz.id,
+              );
+              $(`zone-${zz.id}`).setAttribute(
+                "aria-pressed",
+                String(state.zone === zz.id),
+              );
+            }
+            $("selection-label").textContent = state.zone
+              ? zones.find((zz) => zz.id === state.zone).name
+              : "全エリア";
+          };
+          $("zones").append(b);
+        }
+        function csv() {
+          const rows = [
+            "simulation_time_jst,agent_id,mode,latitude,longitude,speed_mps,route_id,source",
+          ];
+          for (const a of active()) {
+            const p = position(a, state.time),
+              g = geo(p);
+            rows.push(
+              [
+                format(state.time),
+                a.id,
+                a.car ? "vehicle" : "pedestrian",
+                g.latitude.toFixed(6),
+                g.longitude.toFixed(6),
+                a.speed.toFixed(3),
+                a.routeId,
+                "synthetic",
+              ].join(","),
+            );
+          }
+          return rows.join("\n") + "\n";
+        }
+        $("export").onclick = () => {
+          const url = URL.createObjectURL(
+              new Blob([csv()], { type: "text/csv;charset=utf-8" }),
+            ),
+            a = document.createElement("a");
+          a.href = url;
+          a.download = `shinjuku-synthetic-${format(state.time).replaceAll(":", "")}.csv`;
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        };
+        // Read-only diagnostics used by the browser verifier; no network or personal data.
+        window.shinjukuDemo = Object.freeze({
+          snapshot: () => ({
+            state: JSON.parse(JSON.stringify(state)),
+            frameCount,
+            agents: visible.map((v) => ({
+              id: v.a.id,
+              x: v.p.x,
+              y: v.p.y,
+              screenX: v.q.x,
+              screenY: v.q.y,
+              car: v.a.car,
+            })),
+            size: { width: W, height: H },
+          }),
+          csv,
+        });
+        resize();
+        playback();
+        requestAnimationFrame(tick);
+      })();
+    </script>
+  </body>
+</html>

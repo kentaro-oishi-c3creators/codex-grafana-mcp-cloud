@@ -1,6 +1,11 @@
 {
   "name": "codex-grafana-mcp-cloud",
   "private": true,
-  "scripts": {"verify:browser": "node scripts/verify-browser.cjs"},
-  "devDependencies": {"playwright": "1.62.1"}
+  "scripts": {
+    "verify:browser": "node scripts/verify-browser.cjs",
+    "verify:shinjuku": "node scripts/verify-shinjuku.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
 }

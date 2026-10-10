@@ -15,9 +15,20 @@ Grafana のダッシュボードを JSON として Git で管理し、公式 Gra
 | `config/network-domains.txt` | 通信先の一覧。自動適用はしません |
 | `scripts/` | セットアップ・MCP 起動・差分確認・反映・検証 |
 | `tests/` | 定義の破損や環境依存の混入を検出するテスト |
+| `demos/<名前>/` | 単独で開ける可視化デモと説明 |
 | `docs/` | 設計・運用・環境設定・トラブル対応 |
 | `.local/` | 依存関係、スクリーンショット、検証結果。Git 対象外 |
 | `AGENTS.md` | Codex などが変更するときの作業ルール |
+
+## 新宿人流ラボ
+
+[SHINJUKU FLOW](demos/shinjuku-flow/README.md) は、人と車の移動アニメーション、時間再生、2D／3D切り替え、点の追跡、CSV保存を試せる独立デモです。HTMLをダウンロードしてブラウザで開けます。外部通信は不要で、データと地図は合成／模式モデルです。Grafana内のパネルとして公開したものではありません。
+
+```bash
+npm run verify:shinjuku
+```
+
+[設計とデータ仕様](docs/shinjuku-flow.md) に、モデルの前提と実データへ置き換える箇所を記載しています。
 
 ## 最初の準備
 
