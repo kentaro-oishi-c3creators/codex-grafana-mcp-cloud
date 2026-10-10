@@ -16,3 +16,9 @@
 ## 新宿人流デモの検証
 
 `npm run verify:shinjuku`（`verify-shinjuku.cjs`）は独立したHTMLデモをChromiumで操作し、13項目を確認します。Grafana認証やネット接続は不要です。画像と結果は `.local/browser/shinjuku-flow/` に保存します。開き方は [デモのREADME](../demos/shinjuku-flow/README.md) を参照してください。
+
+## GitHub Pages の公開準備
+
+`python3 scripts/build-pages.py` は `.local/pages-site/` に新宿デモの `index.html` と `.nojekyll` だけを配置します。余分なファイルが存在したら中止します。
+
+`SHINJUKU_URL=https://<公開先>/ npm run verify:shinjuku` は公開URLのHTTP 200、チェックアウトしたHTMLとの完全一致と13項目の操作を検証します。ChromiumのシステムインストールがなければPlaywright管理のブラウザを使用します。CIでは `npx playwright install --with-deps chromium` で準備します。

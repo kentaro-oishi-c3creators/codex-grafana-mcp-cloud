@@ -3,12 +3,19 @@ const { chromium } = require("playwright");
 const assert = require("node:assert/strict");
 const fs = require("node:fs/promises");
 const path = require("node:path");
+const { existsSync } = require("node:fs");
 (async () => {
   const root = path.resolve(__dirname, ".."),
     out = path.join(root, ".local/browser/shinjuku-flow");
   await fs.mkdir(out, { recursive: true });
+  const targetUrl = process.env.SHINJUKU_URL;
+  if (targetUrl && !/^https?:\/\//.test(targetUrl)) {
+    throw new Error("SHINJUKU_URL must be an HTTP or HTTPS URL");
+  }
   const browser = await chromium.launch({
-    executablePath: process.env.CHROMIUM_PATH || "/usr/bin/chromium",
+    executablePath:
+      process.env.CHROMIUM_PATH ||
+      (existsSync("/usr/bin/chromium") ? "/usr/bin/chromium" : undefined),
     headless: true,
     args: ["--no-sandbox"],
   });
@@ -40,12 +47,34 @@ const path = require("node:path");
     await page.waitForTimeout(250);
   };
   try {
-    await page.setContent(
-      await fs.readFile(
-        path.join(root, "demos/shinjuku-flow/index.html"),
-        "utf8",
-      ),
-    );
+    if (targetUrl) {
+      const response = await page.goto(targetUrl, { waitUntil: "load" });
+      assert.equal(
+        response.status(),
+        200,
+        "Published HTML must return HTTP 200",
+      );
+      assert.equal(
+        page.url(),
+        targetUrl,
+        "Unexpected redirect from published site",
+      );
+      assert.equal(
+        await response.text(),
+        await fs.readFile(
+          path.join(root, "demos/shinjuku-flow/index.html"),
+          "utf8",
+        ),
+        "Published HTML must match the checked-out commit",
+      );
+    } else {
+      await page.setContent(
+        await fs.readFile(
+          path.join(root, "demos/shinjuku-flow/index.html"),
+          "utf8",
+        ),
+      );
+    }
     await page.waitForFunction(
       () => window.shinjukuDemo?.snapshot().frameCount > 2,
     );
@@ -254,13 +283,14 @@ const path = require("node:path");
     });
     await check("No external requests or JavaScript errors", async () => {
       assert.deepEqual(errors, []);
-      assert.deepEqual(network, []);
+      assert.deepEqual(network, targetUrl ? [targetUrl] : []);
     });
     await fs.writeFile(
       path.join(out, "validation.json"),
       JSON.stringify(
         {
           passed: true,
+          target: targetUrl || "local HTML",
           checks,
           errors,
           externalRequests: network,

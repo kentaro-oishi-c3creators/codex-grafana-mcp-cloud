@@ -1,0 +1,105 @@
+name: Publish Shinjuku Flow
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "demos/shinjuku-flow/index.html"
+      - "scripts/build-pages.py"
+      - "scripts/verify-shinjuku.cjs"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shinjuku-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    outputs:
+      pages_enabled: ${{ steps.pages-status.outputs.enabled }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - name: Verify the interactive demo
+        run: npm run verify:shinjuku
+      - name: Stage the public HTML only
+        run: python3 scripts/build-pages.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .local/pages-site
+      - name: Check whether Pages is enabled for Actions
+        id: pages-status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            let enabled = false;
+            try {
+              const response = await github.rest.repos.getPages(context.repo);
+              enabled = response.data.build_type === 'workflow';
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+            core.setOutput('enabled', String(enabled));
+            if (!enabled) {
+              const settings = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/settings/pages`;
+              await core.summary.addHeading('Pages setup required')
+                .addRaw(`Build and browser checks passed. Deployment was skipped. Open ${settings}, select GitHub Actions as the Pages source, then run this workflow again.`)
+                .write();
+            }
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.pages_enabled == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - name: Verify the published site
+        env:
+          SHINJUKU_URL: ${{ steps.deployment.outputs.page_url }}
+        run: npm run verify:shinjuku
+      - name: Save browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shinjuku-pages-browser
+          path: .local/browser/shinjuku-flow
+          retention-days: 7

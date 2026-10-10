@@ -14,6 +14,6 @@
 - TLS、パッケージ検証、テストのアサーションを無効にしない。証明書の信頼追加は承認された範囲で行う。
 - `.local/` はローカル依存関係と検証出力の置き場。Git に入れない。
 - クラウドタスクは既に隔離されている。ユーザーが明示的に求めない限り Git worktree を作らない。
-- 基本確認: `python3 -m unittest discover -s tests -v` と `python3 scripts/manage.py validate`。CI は読み取り検証だけで、自動デプロイしない。
+- 基本確認: `python3 -m unittest discover -s tests -v` と `python3 scripts/manage.py validate`。GrafanaのCIは読み取り検証だけで、自動デプロイしない。ユーザーが指定した独立HTMLデモのGitHub Pages公開は `pages.yml` で行い、公開URLもブラウザ検証する。
 
 - `demos/` の独立画面は Grafana 定義とは分けて管理し、合成／実測の区別を画面と README に明記する。新宿人流デモの表示変更は `npm run verify:shinjuku` と出力画像の確認まで行う。外部通信を追加する場合は既存のオフライン前提と検証を更新する。

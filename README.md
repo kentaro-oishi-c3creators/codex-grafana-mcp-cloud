@@ -30,6 +30,12 @@ npm run verify:shinjuku
 
 [設計とデータ仕様](docs/shinjuku-flow.md) に、モデルの前提と実データへ置き換える箇所を記載しています。
 
+### GitHub Pagesで公開する
+
+[公開設定と確認手順](docs/github-pages.md) を用意しています。GitHubの **Settings → Pages → Source → GitHub Actions** を選び、**Actions → Publish Shinjuku Flow → Run workflow** を実行してください。以後はmain上のデモ変更に合わせて検証・公開します。Pages未有効の場合は公開をスキップするので、ワークフローの成功だけでは公開成功を意味しません。
+
+公開先（有効化・デプロイ成功後）は `https://kentaro-oishi-c3creators.github.io/codex-grafana-mcp-cloud/` です。
+
 ## 最初の準備
 
 Python 3.10 以上、uv が必要です。ブラウザ検証には Node.js 20 以上と Chromium / Playwright も使います。
@@ -95,4 +101,4 @@ Grafana の周辺アプリや解析通信の失敗は別途記録します。サ
 - [よくあるエラーと確認方法](docs/troubleshooting.md)
 - [今回のサンプルの説明](dashboards/synthetic-signals/README.md)
 
-GitHub Actions は構造チェックと単体テストだけを実行します。Grafana の更新は自動実行せず、トークンも CI に要求しません。
+`validate.yml` はGrafana定義の構造チェックと単体テストを実行します。Grafanaの更新は自動実行せず、トークンもCIに要求しません。`pages.yml` は独立したHTMLデモを検証し、Pagesが有効な場合に公開します。

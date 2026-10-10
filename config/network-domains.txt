@@ -8,3 +8,7 @@ plugins-cdn.grafana.net
 pypi.org
 files.pythonhosted.org
 registry.npmjs.org
+
+# GitHub Pages settings API and published-site verification
+api.github.com
+kentaro-oishi-c3creators.github.io
