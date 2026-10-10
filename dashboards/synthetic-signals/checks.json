@@ -1,0 +1,5 @@
+{
+  "panel_titles": ["Synthetic wave (demo data)", "Demo load: 72 / 100", "Demo success rate: 99.5%", "Experiment status"],
+  "expected_values": [72, 99.5],
+  "require_time_series": true
+}

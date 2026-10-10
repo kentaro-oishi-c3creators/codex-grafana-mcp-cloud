@@ -1,0 +1,6 @@
+# Merge this section into the client's existing configuration.
+# Replace the path with the actual checkout path. Do not copy credentials here.
+[mcp_servers.grafana]
+command = "bash"
+args = ["/workspace/codex-grafana-mcp-cloud/scripts/start-mcp.sh", "grafana-cloud"]
+env_vars = ["GRAFANA_SERVICE_ACCOUNT_TOKEN"]

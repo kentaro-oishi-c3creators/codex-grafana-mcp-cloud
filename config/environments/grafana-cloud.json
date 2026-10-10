@@ -1,0 +1,11 @@
+{
+  "grafana_url": "https://patientmoss2465.grafana.net",
+  "token_env": "GRAFANA_SERVICE_ACCOUNT_TOKEN",
+  "datasources": {"prometheus": "grafanacloud-prom"},
+  "dashboards": {
+    "synthetic-signals": {
+      "uid": "codex-test-716e4ec3e357",
+      "folder_uid": "fg0qelcp5ovswe"
+    }
+  }
+}

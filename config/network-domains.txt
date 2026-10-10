@@ -1,0 +1,10 @@
+# Grafana instance and official documentation
+patientmoss2465.grafana.net
+grafana.com
+# Frontend and plugins required for browser verification
+grafana-assets.grafana.net
+plugins-cdn.grafana.net
+# Official package installation
+pypi.org
+files.pythonhosted.org
+registry.npmjs.org
