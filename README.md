@@ -76,6 +76,8 @@ Grafana の周辺アプリや解析通信の失敗は別途記録します。サ
 
 ## 次に読むもの
 
+- [現在のダッシュボード一覧](docs/dashboard-inventory.md)
+- [既存の人事デモの内容確認](docs/hr-demo-review.md)
 - [設計と管理方針](docs/architecture.md)
 - [ダッシュボード追加・更新の手順](docs/dashboard-workflow.md)
 - [環境と MCP の設定](docs/environment-setup.md)
